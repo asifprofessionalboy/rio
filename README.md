@@ -1,22 +1,7 @@
-select count(distinct ah.Hdate)
-from App_HolidayMaster ah
-where DATEPART(month, ah.Hdate) = '10'
-  and DATEPART(year, ah.Hdate) = '2024'
-  and ah.Location = 'KTP'
-  and (
-    exists (
-      select 1
-      from App_AttendanceDetails
-      where dates = ah.Hdate - 1
-        and AadharNo = AttDtl.AadharNo
-        and WorkOrderNo = AttDtl.WorkOrderNo
-        and CAST(present AS INT) >= 1
-    ) or exists (
-      select 1
-      from App_AttendanceDetails
-      where dates = ah.Hdate + 1
-        and AadharNo = AttDtl.AadharNo
-        and WorkOrderNo = AttDtl.WorkOrderNo
-        and CAST(present AS INT) >= 1
-    )
-  )
+
+select W.VendorCode,W.VendorName,W.WorkOrderNo,W.PROC_MONTH, sum(W.TotPaymentDays) as Tot ,count (W.WorkManCategory),W.NetWagesAmt,
+P.PFAmt,p.ESIAmt,P.GrossWages
+from App_Online_Wages_Details W
+inner join App_PF_ESI_Details P
+On  P.WorkOrderNo  = W.WorkOrderNo 
+where VendorCode='16293' and W.WorkOrderNo='4700022667' group by WorkManCategory order by PROC_MONTH
