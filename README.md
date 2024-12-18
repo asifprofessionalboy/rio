@@ -3,12 +3,13 @@ SELECT
     W.VendorName,
     W.WorkOrderNo,
     W.PROC_MONTH,
-    SUM(W.TotPaymentDays) AS Tot,
-    COUNT(W.WorkManCategory) AS WorkManCategoryCount,
-    W.NetWagesAmt,
-    P.PFAmt,
-    P.ESIAmt,
-    P.GrossWages
+    W.WorkManCategory,       -- Skill category (Skilled/Unskilled)
+    COUNT(W.WorkManCategory) AS TotalWorkers, -- Count of workers in each category
+    SUM(W.TotPaymentDays) AS TotalPaymentDays, -- Total payment days
+    SUM(W.NetWagesAmt) AS TotalNetWages,       -- Total net wages
+    SUM(P.PFAmt) AS TotalPFAmt,               -- Total PF amount
+    SUM(P.ESIAmt) AS TotalESIAmt,             -- Total ESI amount
+    SUM(P.GrossWages) AS TotalGrossWages      -- Total gross wages
 FROM 
     App_Online_Wages_Details W
 INNER JOIN 
@@ -23,9 +24,6 @@ GROUP BY
     W.VendorName, 
     W.WorkOrderNo, 
     W.PROC_MONTH, 
-    W.NetWagesAmt, 
-    P.PFAmt, 
-    P.ESIAmt, 
-    P.GrossWages
+    W.WorkManCategory
 ORDER BY 
     W.PROC_MONTH;
